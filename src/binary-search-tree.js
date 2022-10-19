@@ -9,8 +9,8 @@ const { Node } = require('../extensions/list-tree.js');
 class BinarySearchTree {
   constructor() {
     this.rootNode = null;
-  }
-  root() {
+  }  
+root() {
     return this.rootNode;
   }
 
@@ -126,160 +126,165 @@ class BinarySearchTree {
     }
     return maxNode.data;
   }
-  /*constructor(){
-    this.tree = null;
-    this.tree_deep = 0;
-    this.ro = null;
-    this.dat = [];
-  }
 
-  root() {
-    return this.ro;
-  }
-
-  add(data) {
-    if(this.tree == null)
+view(current = this.rootNode){
+  if(current != null)
     {
-      this.tree = new Node(data);
-      this.ro = this.tree;
-      this.dat.push(this.tree.data);
-    }
-    else{
-      let deep = this.tree_deep;
-      let pred = this.tree;
-      while(this.tree != null)
-      {
-        /*if(deep == 1)
-        {
-          break;
-        }
-        if(data > this.tree.data)
-        {
-          pred = this.tree;
-          this.tree = this.tree.right;
-        }
-        else{
-          pred = this.tree;
-          this.tree = this.tree.left;
-        }
-        deep--;
-      }
-      if(data > pred.data){
-        pred.right = new Node(data);
-        this.dat.push(data);
-        this.tree_deep++;
-      }
-      else{
-        pred.left = new Node(data);
-        this.dat.push(data);
-        this.tree_deep++;
-      }
-    }
-    this.tree = this.ro;
-  }
-
-  has(data) {
-    return this.dat.includes(data);
-  }
-
-  find(data) {
-    if(this.has(data))
-    {
-      let deep = this.tree_deep;
-      let tree = this.tree;
-      let pred = tree;
-      console.log(this.tree);
-      /*while(tree != null)
-      {
-        if(pred.data == data)
-        {
-          return pred;
-        }
-        console.log(tree);
-        
-        if(data > tree.data)
-        {
-          pred = tree;
-          tree = tree.right;
-        }
-        else{
-          pred = tree;
-          tree = tree.left;
-        }
-        
-        deep--;
-      }
-      return null;
-    }
-    else{
-      return null;
-    }
-  
-}
-
-
-  remove(data) {
-    if(this.find(data) != null)
-    {
-      let remove = this.find(data);
-      let deep = this.tree_deep;
-      let pred = null;
-      let r_l = '';
-      while(deep != 0)
-      {
-        if(this.tree.data == remove.data)
-        {
-          this.dat.splice(this.dat.indexOf(data),1);
-          if(r_l !='')
-          {
-            if(r_l == 'right'){
-              pred.right = this.tree.right;
-            }
-            if(r_l == 'left'){
-              pred.left = this.tree.left;
-            }
-          }
-          this.tree = null;
-          this.tree = this.ro;
-          return;
-        }
-        if(data > this.tree.data)
-        {
-          pred = this.tree;
-          r_l = 'right';
-          this.tree = this.tree.right;
-        }
-        else{
-          pred = this.tree;
-          r_l = 'left';
-          this.tree = this.tree.left;
-        }
-        deep--;
-      }
-    }
-    //this.tree = this.ro;
-  }
-
-  min() {
-    if(this.ro == null)
-    {
-      return null;
-    }
-    else{
-      return Math.min(...this.dat);
+      this.view(current.right);
+      console.log(current);
+      this.view(current.left);
     }
   }
-
-  max() {
-    if(this.ro == null)
-    {
-      return null;
-    }
-    else{
-      return Math.max(...this.dat);
-    }
-  }*/
 }
 module.exports = {
   BinarySearchTree
 };
+
+  /*=================*/
+  /* constructor(){
+  this.tree = null;
+  this.tree_root = null;
+  this.tree_value = [];
+ }
+ root() {
+  return this.tree_root;
+}
+add(data, current = this.tree) {
+  if(this.tree  == null)
+  {
+    current = new Node(data);
+    this.tree = current;
+    if(data)
+      this.tree_value.push(data);
+    if(this.tree_root == null)
+      this.tree_root = current;
+  }
+  else if(current == null && current != this.tree){
+    current = new Node(data);
+    this.tree_value.push(data);
+  }
+  else if(data > current.data){
+    current.right = this.add(data,current.right);
+  } 
+  else if(data < current.data){
+    current.left = this.add(data,current.left);
+  }
+  return current;
+}
+
+has(data){
+  if(this.tree_value.length != 0)
+  {
+    return this.tree_value.includes(data);
+  }
+  return null;
+}
+find(data){
+  while(this.tree != null)
+  {
+    if(this.tree.data == data)
+    {
+      let value = this.tree;
+      this.tree = this.tree_root;
+      return value;
+    }
+    else if(data > this.tree.data){
+      this.tree = this.tree.right;
+    }
+    else if(data < this.tree.data){
+      this.tree = this.tree.left;
+    }
+  }
+  this.tree = this.tree_root;
+  return null;
+}
+
+
+delete_full_branch(node, arr){
+  //let node = this.find(data);
+  if(node != null){
+    if(node.left != null)
+    {
+      arr.push(node.left.data);
+      this.tree_value.splice(this.tree_value.indexOf(node.left.data),1);
+      this.delete_full_branch(node.left,arr);
+      node.left = null;
+    }
+    if(node.right != null)
+    {
+      arr.push(node.right.data);
+      this.tree_value.splice(this.tree_value.indexOf(node.right.data),1);
+      this.delete_full_branch(node.right,arr);
+      node.right = null;
+    }
+  }
+  return arr;
+}
+remove(data){
+  if(this.has(data))
+  {
+    let previous = null;
+    let right = '';
+    while(this.tree != null){
+      if(this.tree.data == data)
+      {
+        if(this.tree.data  == this.tree_root.data)
+        {
+          this.tree_root = null;
+          this.tree_value = [];
+          let arr = this.delete_full_branch(this.tree,[]);
+          this.tree = null;
+          for(let i =0; i < arr.length; i++){
+            this.add(arr[i]);
+          }
+          break;
+        }
+        if(right = 'right')
+        {
+          previous.right = null;
+        }
+        else if(right = 'left')
+        {
+          previous.left = null;
+        }
+        this.tree_value.splice(this.tree_value.indexOf(this.tree.data),1);
+        let arr = this.delete_full_branch(this.tree,[]);
+        this.tree = this.tree_root;
+        for(let i =0; i < arr.length; i++){
+          this.add(arr[i]);
+        }
+        break;
+      }
+      else if(data > this.tree.data)
+      {
+        previous = this.tree;
+        right = 'right';
+        this.tree = this.tree.right;
+      }
+      else if(data < this.tree.data)
+      {
+        previous = this.tree;
+        right = 'left';
+        this.tree = this.tree.left;
+      }
+    }
+    this.tree = this.tree_root;
+  }
+  else{
+    return null;
+  }
+}
+min(){
+  return Math.min(...this.tree_value);
+}
+max(){
+  return Math.max(...this.tree_value);
+}
+view(current = this.tree){
+  if(current != null)
+    {
+      this.view(current.right);
+      console.log(current);
+      this.view(current.left);
+    }
+  } */
